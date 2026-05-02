@@ -1,0 +1,190 @@
+<div class="background-container">
+  <!-- Animated Background Characters -->
+  <div class="characters-container">
+    <div class="character wizard" style="left: 5%; animation-delay: 0s;"></div>
+    <div class="character knight" style="right: 8%; animation-delay: 0.5s;"></div>
+    <div class="character dragon" style="left: 15%; bottom: 20%; animation-delay: 1s;"></div>
+    <div class="character astronaut" style="right: 12%; bottom: 25%; animation-delay: 1.5s;"></div>
+    <div class="character detective" style="left: 25%; bottom: 15%; animation-delay: 0.3s;"></div>
+    <div class="character pirate" style="right: 25%; top: 10%; animation-delay: 0.8s;"></div>
+  </div>
+
+  <div class="book-wall">
+    <div class="book-card ghost">
+      <span>Ghost Stories</span>
+    </div>
+    <div class="book-card sherlock">
+      <span>Sherlock</span>
+    </div>
+    <div class="book-card twilight">
+      <span>Twilight</span>
+    </div>
+    <div class="book-card feluda">
+      <span>Feluda</span>
+    </div>
+    <div class="book-card mejo-mama">
+      <span>Mejo Mama</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="form-section">
+      <h1>✨ AI Audio Storyteller</h1>
+      <p class="subtitle">Generate unique audio stories with AI magic</p>
+
+      <!-- Loading Indicator -->
+      <div class="loading-overlay" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p class="loading-text">{{ loadingMessage || 'Creating your story...' }}</p>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="loadingProgress"></div>
+        </div>
+        <p class="progress-text">{{ loadingProgress | number: '1.0-0' }}%</p>
+      </div>
+
+      <form [formGroup]="storyForm" (ngSubmit)="onSubmit()" [class.form-disabled]="isLoading">
+        <!-- Plot Points -->
+        <div class="form-group">
+          <label for="plot_points">📖 Plot Points *</label>
+          <textarea
+            id="plot_points"
+            formControlName="plot_points"
+            placeholder="Enter plot points (one per line)&#10;Example:&#10;- Hero discovers a hidden power&#10;- Faces a moral dilemma&#10;- Confronts the antagonist"
+            rows="5"
+          ></textarea>
+          <small *ngIf="storyForm.get('plot_points')?.hasError('required')"
+            >Plot points are required</small
+          >
+        </div>
+
+        <!-- Genre and Duration Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="genre">🎭 Genre *</label>
+            <select id="genre" formControlName="genre">
+              <option *ngFor="let genre of genres" [value]="genre">
+                {{ genre }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="duration">⏱️ Duration (minutes) *</label>
+            <input
+              id="duration"
+              type="number"
+              formControlName="duration"
+              min="1"
+              max="60"
+            />
+          </div>
+        </div>
+
+        <!-- Language and Storage Type Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="language">🌍 Language *</label>
+            <select id="language" formControlName="language">
+              <option
+                *ngFor="let lang of languages"
+                [value]="lang.code"
+              >
+                {{ lang.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="storage_type">💾 Storage Type *</label>
+            <select id="storage_type" formControlName="storage_type">
+              <option value="local">Local</option>
+              <option value="cloud">Cloud</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- YouTube URLs -->
+        <div class="form-group">
+          <label for="youtube_urls">📹 YouTube URLs (optional)</label>
+          <textarea
+            id="youtube_urls"
+            formControlName="youtube_urls"
+            placeholder="Paste YouTube URLs (one per line)"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <!-- Other References -->
+        <div class="form-group">
+          <label for="other_references">📚 Other References (optional)</label>
+          <textarea
+            id="other_references"
+            formControlName="other_references"
+            placeholder="Add other text references or prompts"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <!-- File Upload -->
+        <div class="form-group">
+          <label for="files">📄 Upload Files (PDF, TXT)</label>
+          <input
+            id="files"
+            type="file"
+            multiple
+            accept=".pdf,.txt"
+            (change)="onFileSelected($event)"
+            [disabled]="isLoading"
+          />
+          <small *ngIf="selectedFiles.length > 0"
+            >{{ selectedFiles.length }} file(s) selected</small
+          >
+        </div>
+
+        <!-- Error Message -->
+        <div class="error" *ngIf="errorMessage">
+          ⚠️ {{ errorMessage }}
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group">
+          <button
+            type="submit"
+            [disabled]="isLoading"
+            class="btn btn-primary"
+          >
+            {{ isLoading ? '🔄 Generating...' : '✨ Generate Story' }}
+          </button>
+          <button
+            type="button"
+            (click)="resetForm()"
+            class="btn btn-secondary"
+            [disabled]="isLoading"
+          >
+            🔄 Reset
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section" *ngIf="generatedStory">
+      <h2>📖 Your Generated Story</h2>
+      <div class="story-content">
+        {{ generatedStory }}
+      </div>
+
+      <div *ngIf="audioUrl" class="audio-player">
+        <h3>🎧 Listen to Your Story</h3>
+        <audio controls>
+          <source [src]="audioUrl" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+
+      <button (click)="resetForm()" class="btn btn-secondary">
+        ✨ Create Another Story
+      </button>
+    </div>
+  </div>
+</div>
