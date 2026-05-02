@@ -14,6 +14,7 @@ app.add_middleware(
 )
 
 app.mount("/audio", StaticFiles(directory="data/audio"), name="audio")
+app.mount("/pdf", StaticFiles(directory="data/pdf"), name="pdf")
 
 app.include_router(story.router, prefix="/api", tags=["story"])
 

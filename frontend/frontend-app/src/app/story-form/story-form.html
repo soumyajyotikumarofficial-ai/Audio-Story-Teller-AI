@@ -174,12 +174,19 @@
         {{ generatedStory }}
       </div>
 
+      <div *ngIf="pdfUrl" class="pdf-player">
+        <h3>📄 Download Your Story PDF</h3>
+        <a [href]="pdfUrl" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+          Download PDF
+        </a>
+      </div>
+
       <div *ngIf="audioUrl" class="audio-player">
-        <h3>🎧 Listen to Your Story</h3>
-        <audio controls>
-          <source [src]="audioUrl" type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
+        <h3>🎵 Listen to Your Story Audio</h3>
+        <audio controls [src]="audioUrl"></audio>
+        <a [href]="audioUrl" download class="btn btn-secondary">
+          Download Audio
+        </a>
       </div>
 
       <button (click)="resetForm()" class="btn btn-secondary">

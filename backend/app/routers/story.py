@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from typing import List
 import os
 import json
-from app.services import story_generator, audio_generator, rag_service
+from app.services import story_generator, pdf_generator, audio_generator, rag_service
 
 router = APIRouter()
 
@@ -58,6 +58,11 @@ async def generate_story(
             reference_data,
         )
 
+        pdf_path = pdf_generator.generate_story_pdf(
+            story_text,
+            language,
+        )
+
         audio_path = audio_generator.generate_audio(
             story_text,
             language,
@@ -66,6 +71,7 @@ async def generate_story(
 
         return {
             "story": story_text,
+            "pdf_url": pdf_path,
             "audio_url": audio_path,
         }
     except Exception as e:

@@ -15,6 +15,7 @@ export interface GenerateStoryRequest {
 
 export interface GenerateStoryResponse {
   story: string;
+  pdf_url: string;
   audio_url: string;
 }
 

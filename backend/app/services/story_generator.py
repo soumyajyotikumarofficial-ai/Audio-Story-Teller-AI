@@ -38,7 +38,9 @@ def generate_story(plot_points: list, genre: str, duration: int, references: dic
         f"{chr(10).join(f'- {point}' for point in plot_points)}\n\n"
         f"References: {reference_text}\n\n"
         "Write a narrative for audio storytelling with character descriptions, "
-        "scene settings, and sensory details. Make it engaging and concise."
+        "scene settings, and sensory details. Include multiple characters with distinct personalities. "
+        "Assign different voice types to each character (e.g., deep voice for narrator, high-pitched for child, "
+        "gruff for villain). Make it engaging and concise."
     )
 
     try:

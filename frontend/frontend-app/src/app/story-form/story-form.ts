@@ -16,6 +16,7 @@ export class StoryForm implements OnInit {
   storyForm!: FormGroup;
   isLoading = false;
   generatedStory = '';
+  pdfUrl = '';
   audioUrl = '';
   selectedFiles: File[] = [];
   errorMessage = '';
@@ -84,7 +85,7 @@ export class StoryForm implements OnInit {
     this.loadingProgress = 0;
     this.errorMessage = '';
     this.generatedStory = '';
-    this.audioUrl = '';
+    this.pdfUrl = '';
 
     // Simulate progress updates while the backend responds
     const progressInterval = setInterval(() => {
@@ -110,7 +111,12 @@ export class StoryForm implements OnInit {
         this.loadingMessage = 'Finalizing...';
         this.loadingProgress = 95;
         this.generatedStory = response.story;
-        this.audioUrl = response.audio_url;
+        this.pdfUrl = response.pdf_url.startsWith('http')
+          ? response.pdf_url
+          : `http://localhost:8000${response.pdf_url}`;
+        this.audioUrl = response.audio_url.startsWith('http')
+          ? response.audio_url
+          : `http://localhost:8000${response.audio_url}`;
         this.loadingProgress = 100;
       }
     } catch (error: any) {
@@ -145,6 +151,7 @@ export class StoryForm implements OnInit {
     });
     this.selectedFiles = [];
     this.generatedStory = '';
+    this.pdfUrl = '';
     this.audioUrl = '';
     this.errorMessage = '';
   }
